@@ -7,6 +7,10 @@ import { z } from 'zod';
  */
 export const serverSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']),
+  ESS_CLOUD_ID: z.string(),
+  ESS_API_KEY: z.string(),
+  OPEN_AI_API_KEY: z.string(),
+  OPEN_AI_ORG_KEY: z.string(),
 });
 
 /**
