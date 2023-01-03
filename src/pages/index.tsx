@@ -13,6 +13,7 @@ const Home: NextPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [divText, setDivText] = useState('');
   const textRef = useRef<HTMLTextAreaElement>(null);
+  const [previousMentionsList, setPreviousMentionsList] = useState<string[]>([]);
 
   useEffect(() => {
     const createNewList = async () => {
@@ -27,11 +28,30 @@ const Home: NextPage = () => {
     createNewList();
   }, [isLoading]);
 
+  useEffect(() => {
+    if (text.length === 0) {
+      search('');
+    }
+  }, [text]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setDivText(divText + (e.target.value.split(text)[1] || e.target.value)); // Add text to div without erasing HTML
-    setText(e.target.value);
+    if (text.length > e.target.value.length) {
+      const lastMentionStart = divText.lastIndexOf('<span');
+      const lastMentionEnd = divText.lastIndexOf('</span') + 7;
+      if (divText.length === lastMentionEnd && lastMentionStart !== -1 && previousMentionsList.length > 0) {
+        setDivText(divText.slice(0, lastMentionStart));
+        // If text is being deleted
+        setText(e.target.value.slice(0, text.lastIndexOf(previousMentionsList.pop() as string)));
+      } else {
+        setDivText(divText.slice(0, -1)); // Remove last character from div
+        setText(e.target.value);
+      }
+    } else {
+      setDivText(divText + (e.target.value.split(text)[1] || e.target.value)); // Add text to div without erasing HTML
+      setText(e.target.value);
+    }
     if (e.target.value.includes('@')) {
-      const text = e.target.value.split('@')[1] as string;
+      const text = e.target.value.split('@')[1] || '';
       if (text.length > 0) {
         search(text);
       }
@@ -70,6 +90,8 @@ const Home: NextPage = () => {
             textareaText={text}
             setTextareaText={setText}
             users={users}
+            setPrevMentions={setPreviousMentionsList}
+            prevMentions={previousMentionsList}
           />
         </div>
       </div>

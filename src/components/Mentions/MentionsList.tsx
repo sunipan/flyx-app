@@ -8,6 +8,8 @@ export const MentionsList = ({
   setMentionsText,
   setTextareaText,
   textRef,
+  setPrevMentions,
+  prevMentions,
 }: {
   users: User[];
   mentionsText: string;
@@ -15,14 +17,17 @@ export const MentionsList = ({
   setMentionsText: (text: string) => void;
   setTextareaText: (text: string) => void;
   textRef: React.RefObject<HTMLTextAreaElement>;
+  setPrevMentions: (names: string[]) => void;
+  prevMentions: string[];
 }) => {
   const handleClickedUser = (user: User) => {
     const textarea = textareaText.split('@')[0] as string;
     const mentions = mentionsText.split('@')[0] as string;
     setMentionsText(
-      `${mentions} <span class="${user.label === 'customer' ? 'bg-blue-200' : 'bg-red-200'}">${user.name}</span>`.trim()
+      `${mentions} <span class="${user.label === 'customer' ? 'customer' : 'employee'}">${user.name}</span>`.trim()
     );
     setTextareaText(`${textarea}${user.name}`.trim());
+    setPrevMentions([...prevMentions, user.name]);
     textRef.current?.focus();
   };
 
