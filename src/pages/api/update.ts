@@ -7,7 +7,7 @@ import { connectToElasticsearch } from '../../lib/connectElastic';
 
 const create = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    if (req.method !== 'POST') {
+    if (req.method !== 'PUT') {
       res.status(405).json({ message: 'Method not allowed' });
       return;
     }
@@ -48,24 +48,24 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     // Store promises in array
-    const createPromises = [];
+    const updatePromises = [];
     for (let i = 1; i <= 25; i++) {
-      createPromises.push(
-        client.create({
+      updatePromises.push(
+        client.update({
           index: 'search-flyx',
           id: i.toString(),
-          body: {
+          doc: {
             name: finalSplit[i]?.name.trim(),
             email: finalSplit[i]?.email.trim(),
-            label: i % 2 === 0 ? 'customer' : 'employee',
           },
+          retry_on_conflict: 3,
         })
       );
     }
 
     // Run all requests in parallel
-    const createRes = await Promise.all(createPromises);
-    res.status(201).json({ message: 'Success' });
+    const updateRes = await Promise.all(updatePromises);
+    res.status(200).json({ updateRes });
   } catch (err) {
     console.log(err);
     res.status(500).json({ message: 'Internal server error' });

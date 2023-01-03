@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { ReactNode } from 'react';
 
-export const Layout = ({ children, className }: { children: ReactNode; className: string }) => {
+export const Layout = ({ children, className }: { children: ReactNode; className?: string }) => {
   return (
     <>
       <Head>
