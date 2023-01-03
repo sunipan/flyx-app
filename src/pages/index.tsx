@@ -35,6 +35,7 @@ const Home: NextPage = () => {
   }, [text]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    console.log(divText, text, e.target.value);
     if (text.length > e.target.value.length) {
       const lastMentionStart = divText.lastIndexOf('<span');
       const lastMentionEnd = divText.lastIndexOf('</span') + 7;
@@ -51,10 +52,9 @@ const Home: NextPage = () => {
       setText(e.target.value);
     }
     if (e.target.value.includes('@')) {
-      const text = e.target.value.split('@')[1] || '';
-      if (text.length > 0) {
-        search(text);
-      }
+      // console.log('true', text);
+      const splitText = e.target.value.split('@')[1] || '';
+      search(splitText);
     }
   };
 

@@ -6,8 +6,6 @@ module.exports = {
       colors: {
         transparent: 'transparent',
         current: 'currentColor',
-        customer: '#93c5fd',
-        employee: '#fca5a5',
       },
     },
   },

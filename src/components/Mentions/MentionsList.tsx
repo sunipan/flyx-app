@@ -24,7 +24,7 @@ export const MentionsList = ({
     const textarea = textareaText.split('@')[0] as string;
     const mentions = mentionsText.split('@')[0] as string;
     setMentionsText(
-      `${mentions} <span class="${user.label === 'customer' ? 'customer' : 'employee'}">${user.name}</span>`.trim()
+      `${mentions} <span class="${user.label === 'customer' ? 'bg-blue-200' : 'bg-red-200'}">${user.name}</span>`.trim()
     );
     setTextareaText(`${textarea}${user.name}`.trim());
     setPrevMentions([...prevMentions, user.name]);
