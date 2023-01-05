@@ -2,7 +2,7 @@ import { type NextPage } from 'next';
 import { useEffect, useRef, useState } from 'react';
 import { Layout } from '../components/Layout';
 import { MentionsList } from '../components/Mentions/MentionsList';
-import { updateElastic } from '../lib/fetchers';
+import { getGPT, updateElastic } from '../lib/fetchers';
 import { useSearchApi } from '../lib/useSearchApi';
 import Image from 'next/image';
 import { LoadingSpinner } from '../components/LoadingSpinner';
@@ -18,7 +18,8 @@ const Home: NextPage = () => {
   useEffect(() => {
     const createNewList = async () => {
       if (isLoading) {
-        await updateElastic();
+        const { list } = await getGPT();
+        await updateElastic(list);
         await setTimeout(() => {
           mutate();
           setIsLoading(false);

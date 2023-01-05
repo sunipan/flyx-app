@@ -5,40 +5,13 @@ import { connectToElasticsearch } from '../../lib/connectElastic';
 
 // Every time this runs it overwrites the previous data
 
-const create = async (req: NextApiRequest, res: NextApiResponse) => {
+const update = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    if (req.method !== 'PUT') {
+    if (req.method !== 'PATCH') {
       res.status(405).json({ message: 'Method not allowed' });
       return;
     }
-
-    const config = new Configuration({
-      organization: env.OPEN_AI_ORG_KEY,
-      apiKey: env.OPEN_AI_API_KEY,
-    });
-    const openai = new OpenAIApi(config);
-
-    // Get chatGPT completion
-    const openAiRes = await openai.createCompletion({
-      model: 'text-davinci-003',
-      prompt: 'Generate a comma-separated list of 25 random full names and emails in the format name:email',
-      max_tokens: 1500,
-    });
-
-    const completion = openAiRes?.data.choices[0]?.text;
-    if (!completion) {
-      res.status(500).json({ message: 'Completion failed' });
-      return;
-    }
-
-    // Parse the string
-    const firstSplit = completion.split(',');
-
-    const finalSplit = firstSplit.map((item) => {
-      const [name, email] = item.split(':');
-      return { name, email };
-    }) as { name: string; email: string }[];
-
+    const { list } = req.body;
     // Open Elastic client to upload content
     const client = await connectToElasticsearch();
 
@@ -55,8 +28,8 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
           index: 'search-flyx',
           id: i.toString(),
           doc: {
-            name: finalSplit[i]?.name.trim(),
-            email: finalSplit[i]?.email.trim(),
+            name: list[i]?.name.trim(),
+            email: list[i]?.email.trim(),
           },
           retry_on_conflict: 3,
         })
@@ -72,4 +45,4 @@ const create = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default create;
+export default update;

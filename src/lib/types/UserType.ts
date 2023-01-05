@@ -4,3 +4,8 @@ export type User = {
   email: string;
   label: string;
 };
+
+export type UserMinimal = {
+  name: string;
+  email: string;
+};

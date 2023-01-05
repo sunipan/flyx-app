@@ -1,11 +1,12 @@
 import axios from 'axios';
+import { UserMinimal } from './types/UserType';
 
 export const getGPT = async () => {
-  return await axios.get('/api/completion').then((res) => res.data);
+  return await axios.get('/api/getCompletion').then((res) => res.data);
 };
 
-export const updateElastic = async () => {
-  return await axios.put('/api/update').then((res) => res.data);
+export const updateElastic = async (list: UserMinimal[]) => {
+  return await axios.patch('/api/update', { list }).then((res) => res.data);
 };
 
 export const createElastic = async () => {
