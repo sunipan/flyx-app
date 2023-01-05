@@ -36,13 +36,12 @@ const Home: NextPage = () => {
   }, [text]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    console.log(divText, text, e.target.value);
     if (text.length > e.target.value.length) {
       const lastMentionStart = divText.lastIndexOf('<span');
       const lastMentionEnd = divText.lastIndexOf('</span') + 7;
       if (divText.length === lastMentionEnd && lastMentionStart !== -1 && previousMentionsList.length > 0) {
         setDivText(divText.slice(0, lastMentionStart));
-        // If text is being deleted
+        // If text is being deleted, try to delete entire mention
         setText(e.target.value.slice(0, text.lastIndexOf(previousMentionsList.pop() as string)));
       } else {
         setDivText(divText.slice(0, -1)); // Remove last character from div
@@ -53,7 +52,6 @@ const Home: NextPage = () => {
       setText(e.target.value);
     }
     if (e.target.value.includes('@')) {
-      // console.log('true', text);
       const splitText = e.target.value.split('@')[1] || '';
       search(splitText);
     }
